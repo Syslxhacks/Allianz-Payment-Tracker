@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Allianz Payment Tracker</title>
+    <meta name="description" content="Aplicación móvil para el seguimiento y registro de pagos de alumnos de Allianz.">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+
+        <!-- =================================================================
+             1. PIN AUTHENTICATION VIEW
+             ================================================================= -->
+        <section id="pinView" class="pin-view">
+            <div class="pin-header">
+                <div class="pin-logo-badge">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                </div>
+                <h2 class="pin-title">Allianz Tracker</h2>
+                <p class="pin-subtitle">Ingresa tu código PIN de acceso</p>
+            </div>
+
+            <div class="pin-display-container">
+                <div class="pin-dots" id="pinDots">
+                    <div class="pin-dot"></div>
+                    <div class="pin-dot"></div>
+                    <div class="pin-dot"></div>
+                    <div class="pin-dot"></div>
+                </div>
+                <div class="pin-error-msg" id="pinErrorMsg"></div>
+            </div>
+
+            <div class="pin-keypad" id="pinKeypad">
+                <button type="button" class="pin-key" data-key="1">1</button>
+                <button type="button" class="pin-key" data-key="2">2</button>
+                <button type="button" class="pin-key" data-key="3">3</button>
+                <button type="button" class="pin-key" data-key="4">4</button>
+                <button type="button" class="pin-key" data-key="5">5</button>
+                <button type="button" class="pin-key" data-key="6">6</button>
+                <button type="button" class="pin-key" data-key="7">7</button>
+                <button type="button" class="pin-key" data-key="8">8</button>
+                <button type="button" class="pin-key" data-key="9">9</button>
+                <button type="button" class="pin-key key-action" id="pinClearBtn">Borrar</button>
+                <button type="button" class="pin-key" data-key="0">0</button>
+                <button type="button" class="pin-key key-action" id="pinBackspaceBtn" aria-label="Eliminar">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path>
+                        <line x1="18" y1="9" x2="12" y2="15"></line>
+                        <line x1="12" y1="9" x2="18" y2="15"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="pin-footer-info">
+                Allianz Payment Tracker &bull; Seguro
+            </div>
+        </section>
+
+
+        <!-- =================================================================
+             2. MAIN DASHBOARD INTERFACE
+             ================================================================= -->
+        <header class="app-header">
+            <div class="header-top-row">
+                <div class="header-brand">
+                    <div class="brand-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                    </div>
+                    <div class="brand-info">
+                        <h1>Allianz Pagos</h1>
+                        <span id="backendBadge" class="brand-badge">Tracker</span>
+                    </div>
+                </div>
+
+                <div class="header-actions">
+                    <!-- Stats Modal Button with Unpaid Badge -->
+                    <button id="openStatsBtn" class="icon-btn primary" title="Ver Estadísticas" aria-label="Estadísticas">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                        </svg>
+                        <span id="headerUnpaidCount" class="badge-counter">0</span>
+                    </button>
+
+                    <!-- Settings Button -->
+                    <button id="openSettingsBtn" class="icon-btn" title="Preferencias" aria-label="Preferencias">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                    </button>
+
+                    <!-- Lock / Logout Button -->
+                    <button id="lockSessionBtn" class="icon-btn" title="Bloquear Sesión" aria-label="Bloquear">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Persistent Mobile Filters -->
+            <div class="filter-container">
+                <div class="filter-row">
+                    <!-- Persistent Course Dropdown Filter -->
+                    <div class="curso-select-wrapper">
+                        <select id="cursoFilter" class="curso-select" aria-label="Filtrar por curso">
+                            <option value="ALL">Todos los Cursos</option>
+                        </select>
+                        <div class="select-arrow">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instant Name Search -->
+                <div class="search-input-wrapper">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Buscar por nombre de alumno..." autocomplete="off">
+                    <button id="clearSearchBtn" class="search-clear-btn hidden" aria-label="Limpiar búsqueda">&times;</button>
+                </div>
+
+                <!-- Quick Status Filter Pills -->
+                <div class="status-pill-group">
+                    <button type="button" class="status-pill active" data-status="ALL">
+                        Todos <span class="pill-count" id="countAll">0</span>
+                    </button>
+                    <button type="button" class="status-pill" data-status="UNPAID">
+                        Pendientes <span class="pill-count" id="countUnpaid">0</span>
+                    </button>
+                    <button type="button" class="status-pill" data-status="PAID">
+                        Pagados <span class="pill-count" id="countPaid">0</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+
+        <!-- =================================================================
+             3. MAIN STUDENT LIST VIEW
+             ================================================================= -->
+        <main class="main-content">
+            <div class="list-summary-bar">
+                <span id="filteredResultsLabel">Mostrando 0 alumnos</span>
+                <span id="syncIndicator" title="Última sincronización">En vivo</span>
+            </div>
+
+            <!-- Dynamic Student List Container -->
+            <div id="studentsList" class="students-list">
+                <!-- Loading State -->
+                <div class="state-container">
+                    <div class="spinner"></div>
+                    <div class="state-title">Cargando alumnos...</div>
+                </div>
+            </div>
+        </main>
+
+
+        <!-- =================================================================
+             4. MODAL: PAYMENT CONFIRMATION BOTTOM SHEET
+             ================================================================= -->
+        <div id="paymentModal" class="modal-backdrop" role="dialog" aria-modal="true">
+            <div class="bottom-sheet">
+                <div class="sheet-handle"></div>
+                <div class="sheet-header">
+                    <h3 class="sheet-title">Confirmar Pago</h3>
+                    <button class="close-btn" id="closePaymentModalBtn" aria-label="Cerrar">&times;</button>
+                </div>
+                
+                <div class="payment-confirm-card">
+                    <div class="confirm-student-name" id="confirmModalStudentName">Nombre Alumno</div>
+                    <div class="confirm-student-curso" id="confirmModalStudentCurso">Curso</div>
+                </div>
+
+                <p id="confirmModalMessage" style="text-align:center; margin-bottom: 20px; color: var(--text-secondary); font-size: 14px;">
+                    ¿Confirmas que este alumno realizó el pago correspondiente?
+                </p>
+
+                <div class="modal-btn-group">
+                    <button type="button" class="btn btn-secondary" id="cancelPaymentBtn">Cancelar</button>
+                    <button type="button" class="btn btn-success" id="confirmPaymentBtn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span id="confirmBtnText">Marcar como Pagado</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- =================================================================
+             5. MODAL: LIVE STATISTICS VIEW
+             ================================================================= -->
+        <div id="statsModal" class="modal-backdrop" role="dialog" aria-modal="true">
+            <div class="bottom-sheet">
+                <div class="sheet-handle"></div>
+                <div class="sheet-header">
+                    <h3 class="sheet-title">Resumen y Estadísticas</h3>
+                    <button class="close-btn" id="closeStatsModalBtn" aria-label="Cerrar">&times;</button>
+                </div>
+
+                <!-- Big Unpaid Counter Card -->
+                <div class="stats-grid">
+                    <div class="stats-card-main">
+                        <span class="badge-highlight">Faltantes por Pagar</span>
+                        <div class="stats-big-number" id="statsUnpaidTotal">0</div>
+                        <div class="stats-desc" id="statsUnpaidPercent">0% del total de alumnos</div>
+                    </div>
+
+                    <div class="stats-card-mini">
+                        <div class="stats-mini-number" id="statsPaidTotal" style="color: var(--success);">0</div>
+                        <div class="stats-mini-label">Pagados</div>
+                    </div>
+
+                    <div class="stats-card-mini">
+                        <div class="stats-mini-number" id="statsOverallTotal">0</div>
+                        <div class="stats-mini-label">Total Alumnos</div>
+                    </div>
+                </div>
+
+                <!-- Per-Course Breakdown -->
+                <div class="stats-section-title">
+                    <span>Pendientes por Curso</span>
+                    <span id="statsCoursesCount" style="font-size: 13px; color: var(--text-secondary); font-weight: normal;">0 cursos</span>
+                </div>
+
+                <div class="course-stats-list" id="statsCourseList">
+                    <!-- Rendered dynamically -->
+                </div>
+
+                <div style="margin-top: 18px;">
+                    <button type="button" class="btn btn-secondary" id="refreshStatsBtn" style="width: 100%;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                        Actualizar Datos
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- =================================================================
+             6. MODAL: SETTINGS & PREFERENCES
+             ================================================================= -->
+        <div id="settingsModal" class="modal-backdrop" role="dialog" aria-modal="true">
+            <div class="bottom-sheet">
+                <div class="sheet-handle"></div>
+                <div class="sheet-header">
+                    <h3 class="sheet-title">Preferencias</h3>
+                    <button class="close-btn" id="closeSettingsModalBtn" aria-label="Cerrar">&times;</button>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tema de la Interfaz</label>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" class="btn btn-secondary" id="themeLightBtn" style="flex: 1;">☀️ Claro</button>
+                        <button type="button" class="btn btn-secondary" id="themeDarkBtn" style="flex: 1;">🌙 Oscuro</button>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px;">
+                    <button type="button" class="btn btn-secondary" id="loadDemoDataBtn">Restaurar Lista de Alumnos</button>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px; font-size: 12px; color: var(--text-muted);">
+                    Allianz Payment Tracker &bull; 156 Alumnos Registrados
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Toast Container -->
+        <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    </div>
+
+    <!-- Supabase JS Client via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- App Config, Data & Logic -->
+    <script src="config.js"></script>
+    <script src="students_data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
